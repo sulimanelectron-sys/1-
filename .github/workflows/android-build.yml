@@ -13,11 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
     - name: Install system dependencies
       run: |
         sudo apt update
@@ -31,13 +26,13 @@ jobs:
           libpulse-dev libudev-dev libusb-dev libinput-dev \
           libegl1-mesa-dev libfontconfig1 libbz2-dev python3-setuptools
 
-    - name: Install Python dependencies
+    - name: Set up Python and Buildozer
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install --user cython buildozer
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Install Android SDK and Build-Tools
+    - name: Install Android SDK
       run: |
         ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
         mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
@@ -49,13 +44,13 @@ jobs:
         ln -s $ANDROID_SDK_ROOT/cmdline-tools/latest $ANDROID_SDK_ROOT/tools/bin
 
         export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
-
         yes | sdkmanager --licenses
         sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Build APK
       env:
         PATH: $HOME/.local/bin:$HOME/.buildozer/android/platform/android-sdk/platform-tools:$HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH
+         GIT_PYTHON_GIT_EXECUTABLE=/usr/bin/git
       run: |
         buildozer android debug
 
