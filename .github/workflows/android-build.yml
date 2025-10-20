@@ -13,9 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install dependencies and Build APK
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install system dependencies
       run: |
-        # تحديث النظام وتثبيت Git و Java و Build tools
         sudo apt update
         sudo apt install -y git openjdk-11-jdk unzip wget \
           build-essential libffi-dev python3-dev python3-pip \
@@ -27,27 +31,32 @@ jobs:
           libpulse-dev libudev-dev libusb-dev libinput-dev \
           libegl1-mesa-dev libfontconfig1 libbz2-dev python3-setuptools
 
-        # تثبيت Buildozer و Cython
+    - name: Install Python dependencies
+      run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install --user cython buildozer
+        echo "export PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
 
-        # إعداد Android SDK
+    - name: Install Android SDK and Build-Tools
+      run: |
         ANDROID_SDK_ROOT=$HOME/android-sdk
         mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
         unzip cmdline-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
         mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+        export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+
+        # قبول جميع التراخيص تلقائيًا
         yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
+
+        # تثبيت الأدوات المطلوبة مع نسخة مدعومة من Build-Tools
         $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-        # التأكد من PATH
-        export PATH=$HOME/.local/bin:$PATH:$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin
+        echo "export PATH=$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.2:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
 
-        # عرض نسخة Git للتأكد
-        git --version
-
-        # بناء APK
-        buildozer android debug
+    - name: Build APK
+      run: |
+        $HOME/.local/bin/buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
