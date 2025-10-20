@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK with Docker
 
 on:
   push:
@@ -13,45 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install Git
-      run: sudo apt update && sudo apt install -y git
-
-    - name: Install system dependencies
+    - name: Build APK using Buildozer Docker
       run: |
-        sudo apt install -y openjdk-11-jdk unzip wget build-essential \
-          libffi-dev python3-dev libssl-dev libsqlite3-dev \
-          libjpeg-dev libpng-dev libncurses5-dev libfreetype6-dev \
-          gstreamer1.0-plugins-base libgstreamer1.0-dev libmtdev-dev \
-          libgl1-mesa-dev libgles2-mesa-dev libx11-dev libxext-dev \
-          libxrender-dev libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev \
-          libxss-dev libpulse-dev libudev-dev libusb-dev libinput-dev \
-          libegl1-mesa-dev libfontconfig1 libbz2-dev python3-setuptools
-
-    - name: Install Python dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install --user cython buildozer
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-    - name: Install Android SDK
-      run: |
-        ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
-        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-        unzip cmdline-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
-        mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
-        mkdir -p $ANDROID_SDK_ROOT/tools
-        ln -s $ANDROID_SDK_ROOT/cmdline-tools/latest $ANDROID_SDK_ROOT/tools/bin
-        export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
-        yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-
-    - name: Build APK
-      env:
-        GIT_PYTHON_GIT_EXECUTABLE: /usr/bin/git
-        PATH: $HOME/.local/bin:$HOME/.buildozer/android/platform/android-sdk/platform-tools:$HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH
-      run: |
-        buildozer android debug
+        docker run --rm \
+          -v ${{ github.workspace }}:/app \
+          -w /app \
+          kivy/buildozer \
+          buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
