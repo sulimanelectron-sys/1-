@@ -33,10 +33,10 @@ jobs:
           libxcursor-dev libxi-dev libxinerama-dev libxss-dev \
           libpulse-dev libudev-dev libusb-dev libinput-dev \
           libegl1-mesa-dev libfontconfig1 libbz2-dev \
-          unzip wget openjdk-11-jdk
+          unzip wget openjdk-11-jdk python3-setuptools
 
         python3 -m pip install --upgrade pip
-        python3 -m pip install --user cython buildozer
+        sudo python3 -m pip install cython buildozer
 
     - name: Install Android SDK and AIDL
       run: |
@@ -52,9 +52,9 @@ jobs:
     - name: Build APK
       env:
         ANDROIDSDK: $HOME/android-sdk
-        PATH: $HOME/.local/bin:$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin:/usr/bin:$PATH
+        PATH: /home/runner/.local/bin:$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin:/usr/bin:$PATH
       run: |
-        ~/.local/bin/buildozer android debug
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
