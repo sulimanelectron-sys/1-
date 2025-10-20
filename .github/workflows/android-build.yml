@@ -13,6 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install Git
+      run: |
+        sudo apt update
+        sudo apt install -y git
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -20,8 +25,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt update
-        sudo apt install -y git build-essential libffi-dev python3-dev python3-pip \
+        sudo apt install -y build-essential libffi-dev python3-dev python3-pip \
           libssl-dev libsqlite3-dev libjpeg-dev libpng-dev libncurses5-dev \
           libfreetype6-dev gstreamer1.0-plugins-base libgstreamer1.0-dev \
           libmtdev-dev libgl1-mesa-dev libgles2-mesa-dev \
@@ -31,8 +35,8 @@ jobs:
           libegl1-mesa-dev libfontconfig1 libbz2-dev \
           unzip wget openjdk-11-jdk
 
-        pip install buildozer
         pip install cython
+        pip install buildozer
 
     - name: Install Android SDK and AIDL
       run: |
@@ -48,8 +52,7 @@ jobs:
     - name: Build APK
       env:
         ANDROIDSDK: $HOME/android-sdk
-        ANDROID_NDK_HOME: $HOME/.buildozer/android/platform/android-ndk-r23b
-        PATH: $HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
+        PATH: $HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH:/usr/bin/git:$PATH
       run: |
         buildozer android debug
 
