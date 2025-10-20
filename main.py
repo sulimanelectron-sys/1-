@@ -721,7 +721,7 @@ class QuizGame(BoxLayout):
 
     def exit_game(self, instance=None):
         App.get_running_app().stop()
-# تعديل بسيط لتفعيل GitHub Actions
+# تعديل بسيط للتفعيل GitHub Actions
 class QuizApp(App):
     def build(self):
         return QuizGame()
