@@ -35,7 +35,6 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install --user cython buildozer
-        export PATH=$HOME/.local/bin:$PATH
 
     - name: Install Android SDK and AIDL
       run: |
