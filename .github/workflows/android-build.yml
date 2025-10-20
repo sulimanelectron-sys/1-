@@ -30,7 +30,8 @@ jobs:
           libx11-dev libxext-dev libxrender-dev libxrandr-dev \
           libxcursor-dev libxi-dev libxinerama-dev libxss-dev \
           libpulse-dev libudev-dev libusb-dev libinput-dev \
-          libegl1-mesa-dev libfontconfig1 libbz2-dev
+          libegl1-mesa-dev libfontconfig1 libbz2-dev \
+          android-sdk-platform-tools-common
 
     - name: Build APK
       run: |
