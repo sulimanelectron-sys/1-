@@ -50,7 +50,7 @@ jobs:
     - name: Build APK
       env:
         ANDROIDSDK: $HOME/android-sdk
-        PATH: $HOME/.local/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.2:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+        PATH: /usr/bin:$HOME/.local/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.2:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
       run: |
         buildozer android debug
 
