@@ -31,7 +31,7 @@ jobs:
           libxcursor-dev libxi-dev libxinerama-dev libxss-dev \
           libpulse-dev libudev-dev libusb-dev libinput-dev \
           libegl1-mesa-dev libfontconfig1 libbz2-dev \
-          unzip wget
+          unzip wget openjdk-11-jdk
 
     - name: Install Android SDK and AIDL
       run: |
@@ -45,8 +45,11 @@ jobs:
         sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Build APK
+      env:
+        ANDROIDSDK: $HOME/android-sdk
+        ANDROID_NDK_HOME: $HOME/.buildozer/android/platform/android-ndk-r23b
+        PATH: $HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
       run: |
-        export ANDROIDSDK=$HOME/android-sdk
         buildozer android debug
 
     - name: Upload APK
