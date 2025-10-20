@@ -34,7 +34,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
-        sudo python3 -m pip install cython buildozer
+        python3 -m pip install --user cython buildozer
 
     - name: Install Android SDK and AIDL
       run: |
@@ -50,9 +50,9 @@ jobs:
     - name: Build APK
       env:
         ANDROIDSDK: $HOME/android-sdk
-        PATH: /usr/bin:$HOME/.local/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.2:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+        PATH: /usr/bin:$HOME/.local/bin:$ANDROIDSDK/platform-tools:$ANDROIDSDK/build-tools/33.0.2:$ANDROIDSDK/cmdline-tools/latest/bin:$PATH
       run: |
-        buildozer android debug
+        ~/.local/bin/buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
