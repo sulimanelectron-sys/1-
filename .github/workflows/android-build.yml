@@ -39,24 +39,21 @@ jobs:
 
     - name: Install Android SDK and Build-Tools for Buildozer
       run: |
-        # مجلد Buildozer الافتراضي للـ SDK
         mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools
         cd $HOME/.buildozer/android/platform/android-sdk
-
-        # تحميل أدوات سطر الأوامر
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
         unzip cmdline-tools.zip -d cmdline-tools
         mv cmdline-tools/cmdline-tools cmdline-tools/latest
 
+        # إنشاء الرابط الرمزي للمسار القديم الذي يبحث عنه Buildozer
+        mkdir -p tools
+        ln -s $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest tools/bin
+
         export PATH=$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH
 
-        # قبول جميع تراخيص SDK تلقائيًا
         yes | sdkmanager --licenses
-
-        # تثبيت Build-Tools و Platform-Tools
         sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-        # إضافة المسارات للبيئة
         echo "export PATH=$HOME/.buildozer/android/platform/android-sdk/platform-tools:$HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
 
     - name: Build APK
