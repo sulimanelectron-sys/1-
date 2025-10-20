@@ -36,7 +36,7 @@ jobs:
           unzip wget openjdk-11-jdk python3-setuptools
 
         python3 -m pip install --upgrade pip
-        sudo python3 -m pip install cython buildozer
+        python3 -m pip install --user cython buildozer
 
     - name: Install Android SDK and AIDL
       run: |
@@ -50,10 +50,8 @@ jobs:
         $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Build APK
-      env:
-        ANDROIDSDK: $HOME/android-sdk
-        PATH: /home/runner/.local/bin:$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin:/usr/bin:$PATH
       run: |
+        export PATH=$HOME/.local/bin:$PATH
         buildozer android debug
 
     - name: Upload APK
