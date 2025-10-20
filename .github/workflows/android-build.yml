@@ -13,11 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install Git
+      run: sudo apt update && sudo apt install -y git
+
     - name: Install system dependencies
       run: |
-        sudo apt update
-        sudo apt install -y git openjdk-11-jdk unzip wget build-essential \
-          libffi-dev python3-dev python3-pip libssl-dev libsqlite3-dev \
+        sudo apt install -y openjdk-11-jdk unzip wget build-essential \
+          libffi-dev python3-dev libssl-dev libsqlite3-dev \
           libjpeg-dev libpng-dev libncurses5-dev libfreetype6-dev \
           gstreamer1.0-plugins-base libgstreamer1.0-dev libmtdev-dev \
           libgl1-mesa-dev libgles2-mesa-dev libx11-dev libxext-dev \
