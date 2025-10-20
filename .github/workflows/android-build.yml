@@ -34,7 +34,8 @@ jobs:
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
-        sudo python3 -m pip install cython buildozer
+        python3 -m pip install --user cython buildozer
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Install Android SDK and Build-Tools
       run: |
@@ -54,7 +55,7 @@ jobs:
 
     - name: Build APK
       env:
-        PATH: /usr/local/bin:$HOME/.buildozer/android/platform/android-sdk/platform-tools:$HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH
+        PATH: $HOME/.local/bin:$HOME/.buildozer/android/platform/android-sdk/platform-tools:$HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$PATH
       run: |
         buildozer android debug
 
