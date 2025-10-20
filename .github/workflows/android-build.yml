@@ -24,10 +24,10 @@ jobs:
           libxi-dev libxinerama-dev libxss-dev libpulse-dev libudev-dev libusb-dev \
           libinput-dev libegl1-mesa-dev libfontconfig1 libbz2-dev python3-setuptools
 
-    - name: Install Python packages
+    - name: Install Python packages globally
       run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install --user cython buildozer
+        sudo python3 -m pip install --upgrade pip
+        sudo python3 -m pip install cython buildozer
 
     - name: Setup Android SDK
       run: |
@@ -43,7 +43,7 @@ jobs:
     - name: Build APK
       env:
         ANDROIDSDK: $HOME/android-sdk
-        PATH: $HOME/.local/bin:$PATH:$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin
+        PATH: /usr/local/bin:$PATH:$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$HOME/android-sdk/cmdline-tools/latest/bin
       run: |
         buildozer android debug
 
